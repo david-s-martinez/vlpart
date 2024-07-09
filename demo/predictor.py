@@ -7,6 +7,9 @@ import cv2
 import torch
 import numpy as np
 from torch.nn import functional as F
+import datetime
+import os
+import matplotlib.pyplot as plt
 
 from detectron2.modeling import build_model
 from detectron2.data import MetadataCatalog
@@ -21,7 +24,7 @@ except:
 
 
 def get_clip_embeddings(vocabulary, prompt='a '):
-    from vlpart.modeling.text_encoder.text_encoder import build_text_encoder
+    from vlpart.vlpart.modeling.text_encoder.text_encoder import build_text_encoder
     text_encoder = build_text_encoder(pretrain=True)
     text_encoder.eval()
     texts = [prompt + x.lower().replace(':', ' ') for x in vocabulary]
@@ -132,7 +135,7 @@ class VisualizationDemo(object):
         self.cfg = cfg
         reset_cls_test(self.predictor.model, classifier)
 
-    def run_on_image(self, image):
+    def run_on_image(self, image,image_path=False):
         """
         Args:
             image (np.ndarray): an image of shape (H, W, C) (in BGR order).
@@ -160,6 +163,25 @@ class VisualizationDemo(object):
             if "instances" in predictions:
                 instances = predictions["instances"].to(self.cpu_device)
                 vis_output = visualizer.draw_instance_predictions(predictions=instances, args=self.cfg)
+                # save image and mask to file
+                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+                # Create a filename with the timestamp
+                mask_name = f"mask_{timestamp}.npy"
+                image_name = f"image_{timestamp}.png"
+                mask_np = instances.pred_masks.to(self.cpu_device).numpy()
+                # weighted_img = cv2.bitwise_and(image, mask_np[0,...].astype(int))
+                # cond = mask_np==1
+                # pixels=np.where(cond, image, mask_np[0,...].astype(int))
+                if mask_np.ndim == 3:
+                    mask_np = mask_np[0]
+                
+                # np.save('/workspaces/inference_container/Multifinger-Net-dev/data/vlpart/' + mask_name, mask_np)
+                # cv2.imwrite('/workspaces/inference_container/Multifinger-Net-dev/data/vlpart/' + image_name,image)
+                directory = os.path.dirname(image_path)
+                file_name = os.path.basename(image_path)
+                index = file_name[file_name.find('color_') + 6:file_name.find('color_') + 10]
+                np.save(os.path.join(directory,'mask_' + index +'.npy'),mask_np)
 
         return predictions, vis_output
 

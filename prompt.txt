@@ -1,0 +1,50 @@
+I would like you to help me write Python code to extract object part from image based on the given affordance.
+Please complete the code every time when I give you new query. Pay attention to appeared patterns in the given context code.
+Be thorough and thoughtful in your code. Do not include any import statement. Do not repeat my question. Do not provide any text explanation (comment in code is okay).
+Keep in mind, you can only use the provided skills, do not create any skill by youself.
+
+I will first give you the context of the code below:
+
+# Query: affordance is pour and object is cup
+run_segment('cup handle', image_path)
+# done
+
+# Query: affordance is hand over and object is hammer
+run_segment('hammer head', image_path)
+# done
+
+# Query: affordance is use and object is hammer
+run_segment('hammer bar', image_path)
+# done
+
+# Query: affordance is drill and object is drill
+run_segment('drill handle', image_path)
+# done
+
+# Query: affordance is grasp and object is flower
+run_segment('flower scape', image_path)
+# done
+
+# Query: affordance is open and object is drawer
+run_segment('drawer handle', image_path)
+# done
+
+# Query: affordance is open and object is bottle
+run_segment('bottle lid', image_path)
+# done
+
+# Query: affordance is turn off and object is lamp
+run_segment('lamp switch', image_path)
+# done
+
+# Query: affordance is pour and object is pot
+run_segment('pot handle', image_path)
+# done
+
+# Query: affordance is pour and object is pan
+run_segment('pan handle', image_path)
+# done
+
+# Query: affordance is spray and object is pan
+run_segment('spray handle', image_path)
+# done
