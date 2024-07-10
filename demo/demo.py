@@ -48,30 +48,33 @@ def get_parser():
     )
     parser.add_argument("--webcam", action="store_true", help="Take inputs from webcam.")
     parser.add_argument("--video-input", help="Path to video file.")
-    parser.add_argument(
-        "--input",
-        nargs="+",
-        help="A list of space separated input images; "
-        "or a single glob pattern such as 'directory/*.jpg'",
-    )
+    # parser.add_argument(
+    #     "--input",
+    #     nargs="+",
+    #     help="A list of space separated input images; "
+    #     "or a single glob pattern such as 'directory/*.jpg'",
+    # )
+
     parser.add_argument(
         "--output",
+        default="output_image",
         help="A file or directory to save output visualizations. "
         "If not given, will show output in an OpenCV window.",
     )
     parser.add_argument(
         "--vocabulary",
-        default="pascal_part",
+        default="custom",
         choices=['pascal_part', 'partimagenet', 'paco',
                  'voc', 'coco', 'lvis',
                  'pascal_part_voc', 'lvis_paco', 'custom'],
         help="",
     )
-    parser.add_argument(
-        "--custom_vocabulary",
-        default="",
-        help="",
-    )
+    # parser.add_argument(
+    #     "--custom_vocabulary",
+    #     default="",
+    #     help="",
+    # )
+
     parser.add_argument(
         "--confidence-threshold",
         type=float,
@@ -105,19 +108,21 @@ def test_opencv_video_format(codec, file_ext):
         return False
 
 
-if __name__ == "__main__":
+def run_segment(object, image_path):
     mp.set_start_method("spawn", force=True)
     args = get_parser().parse_args()
+    args.custom_vocabulary = object
+    args.input = [image_path]
     setup_logger(name="fvcore")
     logger = setup_logger()
     logger.info("Arguments: " + str(args))
 
     cfg = setup_cfg(args)
     demo = VisualizationDemo(cfg, args)
-    
+
     if args.output:
         os.makedirs(args.output, exist_ok=True)
-    
+
     if args.input:
         if len(args.input) == 1:
             args.input = glob.glob(os.path.expanduser(args.input[0]))
@@ -150,7 +155,7 @@ if __name__ == "__main__":
             #     cv2.imshow(WINDOW_NAME, visualized_output.get_image()[:, :, ::-1])
             #     if cv2.waitKey(0) == 27:
             #         break  # esc to quit
-    
+
     elif args.webcam:
         assert args.input is None, "Cannot have both --input and --webcam!"
         assert args.output is None, "output not yet supported with --webcam!"
@@ -204,3 +209,9 @@ if __name__ == "__main__":
             output_file.release()
         else:
             cv2.destroyAllWindows()
+
+
+if __name__ == "__main__":
+    obj = 'cup handle'
+    image_path = '/home/qf/Pictures/cup.jpeg'
+    run_segment(obj, image_path)

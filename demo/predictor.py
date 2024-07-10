@@ -155,6 +155,9 @@ class VisualizationDemo(object):
             vis_output = visualizer.draw_panoptic_seg_predictions(
                 panoptic_seg.to(self.cpu_device), segments_info
             )
+
+
+# TODO: Save mask, either predictions["sem_seg"] or predictions["instances"]
         else:
             if "sem_seg" in predictions:
                 vis_output = visualizer.draw_sem_seg(
