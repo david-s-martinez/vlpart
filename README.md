@@ -13,6 +13,16 @@ This ability comes from two designs:
 
 ## Installation
 
+Torch:
+```
+pip install torch==2.0.0 torchvision==0.15.1 torchaudio==2.0.1 --index-url https://download.pytorch.org/whl/cu118
+export MAX_JOBS=4 && pip install --no-cache-dir "git+https://github.com/facebookresearch/pytorch3d.git@stable" --user
+```
+Other:
+```
+pip install --upgrade networkx==3.0 numpy==1.19.5 pandas==1.3.4 trimesh==4.0.0 matplotlib==3.1.2 scipy==1.10.1 
+```
+
 See [installation instructions](INSTALL.md).
 
 ## Getting Started
