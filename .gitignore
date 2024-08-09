@@ -41,12 +41,15 @@ model_ts*.txt
 .idea
 .vscode
 _darcs
-
+detectron2
 # project dirs
 /detectron2/model_zoo/configs
 /datasets/*
 !/datasets/*.*
 !/datasets/metadata
+!/datasets/clutter_sample
 /projects/*/datasets
+!GroundingDINO_with_Segment_Anything.ipynb
 #/models
 /snippet
+key.txt

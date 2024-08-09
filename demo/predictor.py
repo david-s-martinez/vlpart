@@ -24,7 +24,11 @@ except:
 
 
 def get_clip_embeddings(vocabulary, prompt='a '):
-    from vlpart.vlpart.modeling.text_encoder.text_encoder import build_text_encoder
+    try:
+        from vlpart.vlpart.modeling.text_encoder.text_encoder import build_text_encoder
+    except:
+        from vlpart.modeling.text_encoder.text_encoder import build_text_encoder
+
     text_encoder = build_text_encoder(pretrain=True)
     text_encoder.eval()
     texts = [prompt + x.lower().replace(':', ' ') for x in vocabulary]

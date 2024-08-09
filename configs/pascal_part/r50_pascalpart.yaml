@@ -1,6 +1,7 @@
 _BASE_: "../coco/r50_coco.yaml"
 MODEL:
-  WEIGHTS: /workspaces/inference_container/Multifinger-Net-dev/vlpart/models/r50_lvis_paco_pascalpart_ins11_ins11parsed.pth
+  # WEIGHTS: /workspaces/inference_container/Multifinger-Net-dev/vlpart/models/r50_lvis_paco_pascalpart_ins11_ins11parsed.pth
+  WEIGHTS: models/r50_lvis_paco_pascalpart_ins11_ins11parsed.pth
   MASK_ON: True
   ROI_HEADS:
     NUM_CLASSES: 93
@@ -9,8 +10,10 @@ MODEL:
     USE_SIGMOID_CE: True
     USE_ZEROSHOT_CLS: True
     ZEROSHOT_WEIGHT_DIM: 1024
-    ZEROSHOT_WEIGHT_PATH: 'vlpart/datasets/metadata/pascal_part_clip_RN50_a+cname.npy'
-    ZEROSHOT_WEIGHT_INFERENCE_PATH: 'vlpart/datasets/metadata/pascal_part_clip_RN50_a+cname.npy'
+    ZEROSHOT_WEIGHT_PATH: 'datasets/metadata/pascal_part_clip_RN50_a+cname.npy'
+    ZEROSHOT_WEIGHT_INFERENCE_PATH: 'datasets/metadata/pascal_part_clip_RN50_a+cname.npy'
+    # ZEROSHOT_WEIGHT_PATH: 'vlpart/datasets/metadata/pascal_part_clip_RN50_a+cname.npy'
+    # ZEROSHOT_WEIGHT_INFERENCE_PATH: 'vlpart/datasets/metadata/pascal_part_clip_RN50_a+cname.npy'
 DATASETS:
   TRAIN: ("pascal_part_train",)
   TEST: ("pascal_part_val",)

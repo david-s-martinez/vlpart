@@ -7,12 +7,17 @@ import pickle
 import json
 import hashlib
 from termcolor import cprint
-from vlpart.demo.demo import run_segment
+try:
+    from vlpart.demo.demo import run_segment
+except:
+    from demo.demo import run_segment
 import base64
 import requests
 import cv2
 
-openai.api_key = ''
+with open('key.txt', 'r') as file:
+    KEY = file.read().rstrip()
+openai.api_key = KEY
 
 
 class GPT4V:
@@ -62,10 +67,13 @@ class GPT4V:
 
 
 class LMP:
-    def __init__(self, image_path):
+    def __init__(self, image_path, is_offline = False, object_name = None, part_name = None):
         self._stop_tokens = ['# Query: ']
         self._cache = DiskCache(load_cache=True)
         self.image_path = image_path
+        self.is_offline = is_offline
+        self.object_name = object_name
+        self.part_name = part_name
 
     def build_prompt(self, query):
         curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -102,23 +110,27 @@ class LMP:
         prompt = self.build_prompt(query)
 
         start_time = time.time()
-        while True:
-            try:
-                code_str = self._cached_api_call(
-                    prompt=prompt,
-                    stop=self._stop_tokens,
-                    temperature=0,
-                    model='gpt-4',
-                    max_tokens=256
-                )
-                break
-            except:
-                print('call api error')
-                print('Retrying after 3s.')
-                sleep(3)
-        print(f'*** OpenAI API call took {time.time() - start_time:.2f}s ***')
+        if self.is_offline:
+            code_str = f"run_segment('{self.object_name} {self.part_name}', image_path)\n# done"
+        else: 
+            while True:
+                try:
+                    code_str = self._cached_api_call(
+                        prompt=prompt,
+                        stop=self._stop_tokens,
+                        temperature=0,
+                        model='gpt-4',
+                        max_tokens=256
+                    )
+                    break
+                except:
+                    print('call api error')
+                    print('Retrying after 3s.')
+                    sleep(3)
+            print(f'*** OpenAI API call took {time.time() - start_time:.2f}s ***')
 
         to_exec = code_str
+        
         gvars = {'run_segment': run_segment}
         lvars = {'image_path': self.image_path}
         self.exec_code(to_exec, gvars, lvars)
@@ -181,9 +193,10 @@ class DiskCache:
     def __repr__(self):
         return repr(self.data)
 
-def run_lmp(image_path):
+def run_lmp(image_path= "datasets/clutter_sample/color_0001.png"):
     #------------
-    affordance = 'hold' #'hand over'
+    # affordance = 'hold' #'hand over'
+    affordance = 'pour'
     # image_path = "/workspaces/inference_container/exp_images/color_test2.png"
     file_name = os.path.basename(image_path)
     # New file name
@@ -205,10 +218,11 @@ def run_lmp(image_path):
     crop_image(image_path)
     #-----------
 
-    API_key = ""
+    API_key = KEY
     mllm = GPT4V(api_key=API_key)
     object = mllm.get_response(cropped_image_path)
     print(object)
+    # object = 'red bowl'
     lmp = LMP(cropped_image_path)
     query = 'affordance is ' + affordance + ' and ' + 'object is ' + object
     lmp(query)

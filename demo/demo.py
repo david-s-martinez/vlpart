@@ -16,9 +16,14 @@ from detectron2.utils.logger import setup_logger
 
 import sys
 sys.path.append('.')
-from vlpart.vlpart.config import add_vlpart_config
+try:
+    from vlpart.vlpart.config import add_vlpart_config
 
-from vlpart.demo.predictor import VisualizationDemo
+    from vlpart.demo.predictor import VisualizationDemo
+except:
+    from vlpart.config import add_vlpart_config
+
+    from demo.predictor import VisualizationDemo
 
 # constants
 WINDOW_NAME = "image demo"
@@ -42,7 +47,8 @@ def get_parser():
     parser = argparse.ArgumentParser(description="Detectron2 demo for builtin configs")
     parser.add_argument(
         "--config-file",
-        default="/workspaces/inference_container/Multifinger-Net-dev/vlpart/configs/pascal_part/r50_pascalpart.yaml",
+        # default="/workspaces/inference_container/Multifinger-Net-dev/vlpart/configs/pascal_part/r50_pascalpart.yaml",
+        default="configs/pascal_part/r50_pascalpart.yaml",
         metavar="FILE",
         help="path to config file",
     )
